@@ -14,89 +14,84 @@ import javax.swing.tree.DefaultTreeModel;
  *
  * @author hermi
  */
-public class ModeloArbol extends DefaultTreeModel{
-    
-    public ModeloArbol(File carpetaRaiz){
+public class ModeloArbol extends DefaultTreeModel {
+    private static final String NODO_CARGANDO = "Cargando...";
+
+    public ModeloArbol(File carpetaRaiz) {
         super(crearNodo(carpetaRaiz));
         cargarHijos((DefaultMutableTreeNode) getRoot());
     }
 
-    private void cargarHijos(DefaultMutableTreeNode nodo){
-        Archivo archivo= (Archivo) nodo.getUserObject();
+    public void cargarHijos(DefaultMutableTreeNode nodo) {
+        if (!(nodo.getUserObject() instanceof Archivo)) return;
+
+        Archivo archivo = (Archivo) nodo.getUserObject();
         File carpeta = archivo.toFile();
-        
-        if (!carpeta.isDirectory())
-            return;
-        
+        if (!carpeta.isDirectory()) return;
+
         File[] contenido = carpeta.listFiles();
-        if(contenido==null)
-            return;
-        
+        if (contenido == null) return;
+
         Arrays.sort(contenido, Comparator
-              .comparing(File::isFile)
-              .thenComparing(f -> f.getName().toLowerCase()));
-        
-        for (File hijo:contenido){
-            if(hijo.isHidden())
-                continue;
-            
-            DefaultMutableTreeNode nodoHijo=crearNodo(hijo);
-            
-            if(hijo.isDirectory()){
-                nodoHijo.add(new DefaultMutableTreeNode("Cargando ..."));
+                .comparing(File::isFile)
+                .thenComparing(f -> f.getName().toLowerCase()));
+
+        for (File hijo : contenido) {
+            if (hijo.isHidden()) continue;
+            DefaultMutableTreeNode nodoHijo = crearNodo(hijo);
+            if (hijo.isDirectory()) {
+                nodoHijo.add(new DefaultMutableTreeNode(NODO_CARGANDO));
             }
             nodo.add(nodoHijo);
         }
     }
-    
-    public void expandirNodo(DefaultMutableTreeNode nodo){
-        if(nodo.getChildCount()==1){
-            DefaultMutableTreeNode primerHijo = (DefaultMutableTreeNode) nodo.getChildAt(0);
-            
-            if("Cargando...".equals(primerHijo.getUserObject())){
+
+    public void expandirNodo(DefaultMutableTreeNode nodo) {
+        if (nodo.getChildCount() == 1) {
+            DefaultMutableTreeNode primerHijo =
+                    (DefaultMutableTreeNode) nodo.getChildAt(0);
+            if (NODO_CARGANDO.equals(primerHijo.getUserObject())) {
                 nodo.removeAllChildren();
                 cargarHijos(nodo);
                 reload(nodo);
             }
         }
     }
-    
-    public void actualizarNodo(DefaultMutableTreeNode nodo){
+
+    public void actualizarNodo(DefaultMutableTreeNode nodo) {
         nodo.removeAllChildren();
         cargarHijos(nodo);
         reload(nodo);
     }
-    
-    public void refrescar(){
+
+    public void refrescar() {
         DefaultMutableTreeNode raiz = (DefaultMutableTreeNode) getRoot();
         raiz.removeAllChildren();
         cargarHijos(raiz);
         reload(raiz);
     }
-    
-    public DefaultMutableTreeNode buscarNodo(String ruta){
-        DefaultMutableTreeNode raiz = (DefaultMutableTreeNode) getRoot();
-        return buscarRecursivo(raiz,ruta);
+
+    public DefaultMutableTreeNode buscarNodo(String ruta) {
+        return buscarRecursivo((DefaultMutableTreeNode) getRoot(), ruta);
     }
-    
-    public DefaultMutableTreeNode buscarRecursivo(DefaultMutableTreeNode nodo, String ruta){
+
+    public DefaultMutableTreeNode buscarRecursivo(
+            DefaultMutableTreeNode nodo, String ruta) {
+        if (!(nodo.getUserObject() instanceof Archivo)) return null;
+
         Archivo archivo = (Archivo) nodo.getUserObject();
-        
-        if(archivo.getRuta().equals(ruta))
-            return nodo;
-        
-        for(int i=0; i<nodo.getChildCount(); i++){
-            DefaultMutableTreeNode hijo = (DefaultMutableTreeNode) nodo.getChildAt(i);
+        if (archivo.getRuta().equals(ruta)) return nodo;
+
+        for (int i = 0; i < nodo.getChildCount(); i++) {
+            DefaultMutableTreeNode hijo =
+                    (DefaultMutableTreeNode) nodo.getChildAt(i);
             DefaultMutableTreeNode resultado = buscarRecursivo(hijo, ruta);
-            
-            if(resultado != null)
-                return resultado;
+            if (resultado != null) return resultado;
         }
         return null;
     }
-    
-    private static DefaultMutableTreeNode crearNodo(File file){
+
+    private static DefaultMutableTreeNode crearNodo(File file) {
         return new DefaultMutableTreeNode(new Archivo(file));
     }
-
 }

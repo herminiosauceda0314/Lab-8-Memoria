@@ -4,17 +4,15 @@
  */
 package lab8_memoria;
 
+import javax.swing.SwingUtilities;
+
 /**
  *
  * @author hermi
  */
 public class Lab8_Memoria {
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        // TODO code application logic here
-    }
     
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(VentanaPrincipal::new);
+    }
 }
