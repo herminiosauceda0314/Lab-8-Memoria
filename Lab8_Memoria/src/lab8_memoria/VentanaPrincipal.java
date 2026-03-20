@@ -52,15 +52,18 @@ public class VentanaPrincipal extends JFrame{
         setVisible(true);
     }
     
-    private void inicializarUI(){
+    private void inicializarUI() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(900, 600);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
-        
-        add(crearBarraHerramientas(),BorderLayout.NORTH);
-        add(crearBarraRuta(),BorderLayout.SOUTH);
-        add(crearSplitPane(),BorderLayout.CENTER);
+
+        JPanel panelSuperior = new JPanel(new BorderLayout());
+        panelSuperior.add(crearBarraRuta(),         BorderLayout.NORTH);
+        panelSuperior.add(crearBarraHerramientas(), BorderLayout.SOUTH);
+
+        add(panelSuperior,  BorderLayout.NORTH);
+        add(crearSplitPane(), BorderLayout.CENTER);
     }
     
     private JToolBar crearBarraHerramientas() {
@@ -185,7 +188,7 @@ public class VentanaPrincipal extends JFrame{
         arbolArchivos.addTreeSelectionListener(e -> {
             Archivo carpeta = getCarpetaSeleccionada();
             if (carpeta != null && carpeta.isEsCarpeta()) {
-                mostrarContenido(carpeta.toFile());
+                mostrarContenido(carpeta.toFile());  // ← lee el disco en el hilo de Swing = se traba
                 labelRuta.setText("Ruta: " + carpeta.getRuta());
                 comboOrden.setSelectedIndex(0);
             }
