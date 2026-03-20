@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package lab8_memoria;
-
+import lab8_memoria.P4ListaEnlazada.Nodo;
 /**
  *
  * @author gpopo
