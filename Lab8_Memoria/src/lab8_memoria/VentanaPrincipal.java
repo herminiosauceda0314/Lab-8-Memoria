@@ -168,10 +168,11 @@ public class VentanaPrincipal extends JFrame{
                 super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
                 if (value instanceof P4ListaEnlazada.Nodo) {
                     P4ListaEnlazada.Nodo n = (P4ListaEnlazada.Nodo) value;
-                    setText(String.format("%-40s %12s  %s",
-                            n.getNombre(),
-                            n.getTamanioFormateado(),
-                            n.getTipo()));
+                    setText(String.format("%-40s  %-20s  %-15s  %s",
+                                n.getNombre(),
+                                n.getFechaFormateada(),
+                                n.getTipo(),
+                                n.getTamanioFormateado()));
                     setIcon(n.archivo.isDirectory()
                             ? UIManager.getIcon("FileView.directoryIcon")
                             : UIManager.getIcon("FileView.fileIcon"));
