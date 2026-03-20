@@ -14,22 +14,7 @@ import java.nio.file.*;
 import java.util.*;
 
 public class Filemanager {
-    
-    public class LinkedFileList {
-    private List<File> lista = new ArrayList<>();
 
-    public void clear()              { lista.clear(); }
-    public void addAll(File[] files) { for (File f : files) lista.add(f); }
-    public List<File> toList()       { return new ArrayList<>(lista); }
-
-    // Persona 4 reemplazará estos métodos con los algoritmos reales
-    public void bubbleSortByName(boolean asc) {}
-    public void bubbleSortBySize(boolean asc) {}
-    public void bubbleSortByType(boolean asc) {}
-    public void mergeSortByDate(boolean asc)  {}
-}
-
-    // ── A. TABLAS DE EXTENSIONES ──────────────────────────────
     private static final Set<String> IMG_EXT = Set.of(
             "jpg","jpeg","png","gif","bmp","svg","webp","tiff","ico");
     private static final Set<String> DOC_EXT = Set.of(
@@ -42,15 +27,12 @@ public class Filemanager {
     private static final String DIR_DOCUMENTOS = "Documentos";
     private static final String DIR_MUSICA     = "Musica";
 
-    // ── B. PORTAPAPELES ────────────────────────────────────────
     private final List<File> clipboard = new ArrayList<>();
     private boolean isCut = false;
 
-    // ── C. LISTA ENLAZADA ──────────────────────────────────────
-    // LinkedFileList debe estar en el mismo package lab8_memoria (Persona 1)
-    private final LinkedFileList fileList = new LinkedFileList();
+    private final P4listanelazada fileList = new P4listaenlazada();
 
-    public LinkedFileList getFileList() { return fileList; }
+    public P4listaenlazada getFileList() { return fileList; }
 
     public void loadDirectory(File dir) {
         fileList.clear();
@@ -59,13 +41,11 @@ public class Filemanager {
         if (files != null) fileList.addAll(files);
     }
 
-    // ── D. ORDENAMIENTO (Persona 4) ────────────────────────────
     public List<File> sortByName(boolean ascending) { fileList.bubbleSortByName(ascending); return fileList.toList(); }
     public List<File> sortBySize(boolean ascending) { fileList.bubbleSortBySize(ascending); return fileList.toList(); }
     public List<File> sortByType(boolean ascending) { fileList.bubbleSortByType(ascending); return fileList.toList(); }
     public List<File> sortByDate(boolean ascending) { fileList.mergeSortByDate(ascending);  return fileList.toList(); }
 
-    // ── E. CREAR CARPETA ───────────────────────────────────────
     public boolean createFolder(File parent, String name) throws IOException {
         if (name == null || name.trim().isEmpty())
             throw new IOException("El nombre no puede estar vacio.");
@@ -80,7 +60,6 @@ public class Filemanager {
         return true;
     }
 
-    // ── F. RENOMBRAR ───────────────────────────────────────────
     public boolean rename(File file, String newName) throws IOException {
         if (newName == null || newName.trim().isEmpty())
             throw new IOException("El nombre no puede estar vacio.");
@@ -92,7 +71,6 @@ public class Filemanager {
         return true;
     }
 
-    // ── G. COPIAR / CORTAR / PEGAR ────────────────────────────
     public void copyToClipboard(List<File> files) { clipboard.clear(); clipboard.addAll(files); isCut = false; }
     public void cutToClipboard(List<File> files)  { clipboard.clear(); clipboard.addAll(files); isCut = true;  }
     public List<File> getClipboard() { return Collections.unmodifiableList(clipboard); }
@@ -110,7 +88,6 @@ public class Filemanager {
         if (isCut) clipboard.clear();
     }
 
-    // ── H. ORGANIZAR ──────────────────────────────────────────
     public OrganizeResult organizeFolder(File folder) throws IOException {
         if (folder == null || !folder.isDirectory())
             throw new IOException("Seleccione una carpeta valida.");
@@ -160,7 +137,6 @@ public class Filemanager {
         return null;
     }
 
-    // ── I. CLASE INTERNA OrganizeResult ───────────────────────
     public static class OrganizeResult {
         public final int movidos, omitidos, errores;
         public final String log;
@@ -169,7 +145,6 @@ public class Filemanager {
         public boolean tuvoExito()    { return movidos > 0; }
     }
 
-    // ── J. PRIVADOS DE APOYO ──────────────────────────────────
     private File resolveDestination(File src, File destDir) {
         File dest = new File(destDir, src.getName());
         if (!dest.exists()) return dest;
@@ -194,7 +169,6 @@ public class Filemanager {
         file.delete();
     }
 
-    // ── K. UTILIDADES ESTÁTICAS ───────────────────────────────
     public static String getExtension(String name) {
         int p = name.lastIndexOf('.');
         return (p >= 0 && p < name.length()-1) ? name.substring(p+1) : "";
