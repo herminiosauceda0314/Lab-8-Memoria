@@ -56,7 +56,7 @@ public class BubbleSort {
         b.archivo = temporal;
     }
     
-    public static void ordenarPorrNombre(P4ListaEnlazada lista) {
+    public static void ordenarPorNombre(P4ListaEnlazada lista) {
         ordenar(lista, Criterio.NOMBRE);
     }
     

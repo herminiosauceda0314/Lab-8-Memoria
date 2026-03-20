@@ -30,21 +30,37 @@ public class Filemanager {
     private final List<File> clipboard = new ArrayList<>();
     private boolean isCut = false;
 
-    private final P4listanelazada fileList = new P4listaenlazada();
+    private final P4ListaEnlazada fileList = new P4ListaEnlazada();
 
-    public P4listaenlazada getFileList() { return fileList; }
+    public P4ListaEnlazada getFileList() { return fileList; }
 
     public void loadDirectory(File dir) {
-        fileList.clear();
+        fileList.limpiar();
         if (dir == null || !dir.isDirectory()) return;
         File[] files = dir.listFiles();
-        if (files != null) fileList.addAll(files);
+        if (files != null)
+            for (File f : files) fileList.agregar(f);
     }
 
-    public List<File> sortByName(boolean ascending) { fileList.bubbleSortByName(ascending); return fileList.toList(); }
-    public List<File> sortBySize(boolean ascending) { fileList.bubbleSortBySize(ascending); return fileList.toList(); }
-    public List<File> sortByType(boolean ascending) { fileList.bubbleSortByType(ascending); return fileList.toList(); }
-    public List<File> sortByDate(boolean ascending) { fileList.mergeSortByDate(ascending);  return fileList.toList(); }
+    public List<P4ListaEnlazada.Nodo> sortByName() {
+        BubbleSort.ordenarPorNombre(fileList);
+        return fileList.aLista();
+    }
+    
+    public List<P4ListaEnlazada.Nodo> sortByType() {
+        BubbleSort.ordenarPorTipo(fileList);
+        return fileList.aLista();
+    }
+    
+    public List<P4ListaEnlazada.Nodo> sortByDate() {
+        MergeSort.ordenarPorFecha(fileList);
+        return fileList.aLista();
+    }
+    
+    public List<P4ListaEnlazada.Nodo> sortBySize() {
+        MergeSort.ordenarPorTamanio(fileList);
+        return fileList.aLista();
+    }
 
     public boolean createFolder(File parent, String name) throws IOException {
         if (name == null || name.trim().isEmpty())
