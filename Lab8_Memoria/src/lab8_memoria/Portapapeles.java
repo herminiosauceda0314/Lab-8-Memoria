@@ -4,10 +4,25 @@
  */
 package lab8_memoria;
 
-/**
- *
- * @author mjosu
- */
+import java.io.File;
+
 public class Portapapeles {
-    
+ 
+    private static File archivoCopIado= null;
+ 
+    public static void copiar(File archivo){
+        archivoCopIado = archivo;
+    }
+ 
+    public static File obtener(){
+        return archivoCopIado;
+    }
+ 
+    public static boolean tieneContenido(){
+        return archivoCopIado !=null;
+    }
+ 
+    public static void limpiar(){
+        archivoCopIado= null;
+    }
 }
